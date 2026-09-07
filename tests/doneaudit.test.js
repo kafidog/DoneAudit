@@ -22,7 +22,7 @@ function fixture() {
   command(cwd, 'git', ['add', '.']);
   assert.equal(command(cwd, 'git', ['commit', '-m', 'fixture']).status, 0);
   const invoke = (...args) => command(cwd, process.execPath, [cli, ...args]);
-  const install = invoke('init'); assert.equal(install.status, 0, install.stderr);
+  const install = invoke('init'); assert.equal(install.status, 0, install.stdout + install.stderr);
   const config = { version: 1, checks: [
     { label: 'test', group: 'test', command: 'node pass.js' },
     { label: 'build', group: 'build', command: 'node pass.js' },
