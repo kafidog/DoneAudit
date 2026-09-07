@@ -43,13 +43,17 @@ THIRD_PARTY_NOTICES.md identifies origin and DoneAudit additions.
   artifacts/codex-session-final.txt (untracked; not published).
 
 ## Incomplete
-GitHub Actions execution and public v0.1.0 release remain pending.
+GitHub Linux DoneAudit demo and all upstream jobs passed. Windows DoneAudit CI
+exposed a short-path/long-path root comparison bug, reproduced locally under Node 22.
+Native Windows realpath comparison fixes the cause; the corrected source is awaiting CI.
+Public v0.1.0 release remains pending.
 
 ## v0.1 release readiness
 Local gates passed; not released and not yet DONEAUDIT_V0_1_READY.
 
 ## Git SHA
-This source commit is being prepared; upstream SHA is recorded above.
+Initial DoneAudit source: 50897205c12d811f7271a54ab265ac31fc815e5e.
+Windows path correction is being committed; final release SHA will be recorded here.
 
 ## Next single action
 Push kafidog/DoneAudit, inspect actual GitHub Actions results, then publish v0.1.0.

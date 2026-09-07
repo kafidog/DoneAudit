@@ -21,7 +21,7 @@ function git(args) {
 }
 function snapshot() {
   const top = git(['rev-parse', '--show-toplevel']).trim();
-  if (fs.realpathSync(top).toLowerCase() !== fs.realpathSync(process.cwd()).toLowerCase()) throw new Error('Run DoneAudit from the Git repository root.');
+  if (fs.realpathSync.native(top).toLowerCase() !== fs.realpathSync.native(process.cwd()).toLowerCase()) throw new Error('Run DoneAudit from the Git repository root.');
   const files = [...new Set(git(['ls-files', '-z', '--cached', '--others', '--exclude-standard']).split('\0').filter(Boolean))].sort();
   const digest = crypto.createHash('sha256');
   for (const file of files) {
