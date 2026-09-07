@@ -1,12 +1,18 @@
 {
-  "name": "agent-done-or-not",
-  "version": "0.13.1",
-  "description": "Proof-of-done gate that makes AI agents prove a task is done before claiming it.",
+  "name": "doneaudit",
+  "version": "0.1.0",
+  "description": "Your AI says done. Verify the evidence: a reproducible trust score in your terminal and GitHub.",
   "bin": {
-    "agent-done-or-not": "bin/agent-done-or-not.js"
+    "agent-done-or-not": "bin/agent-done-or-not.js",
+    "doneaudit": "bin/doneaudit.js"
   },
   "scripts": {
-    "smoke": "node bin/agent-done-or-not.js --help"
+    "smoke": "node bin/agent-done-or-not.js --help",
+    "test": "node --test tests/doneaudit.test.js",
+    "build": "node --check bin/doneaudit.js",
+    "check": "node --check bin/execute-check.js",
+    "demo": "node scripts/demo.js",
+    "verify": "node scripts/verify.js"
   },
   "files": [
     "bin/",
@@ -26,20 +32,21 @@
     ".clinerules",
     ".goosehints",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "THIRD_PARTY_NOTICES.md"
   ],
   "engines": {
-    "node": ">=14"
+    "node": ">=18"
   },
   "license": "MIT",
   "author": "mohamedzhioua",
-  "homepage": "https://github.com/mohamedzhioua/agent-done-or-not#readme",
+  "homepage": "https://github.com/kafidog/DoneAudit#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mohamedzhioua/agent-done-or-not.git"
+    "url": "git+https://github.com/kafidog/DoneAudit.git"
   },
   "bugs": {
-    "url": "https://github.com/mohamedzhioua/agent-done-or-not/issues"
+    "url": "https://github.com/kafidog/DoneAudit/issues"
   },
   "keywords": [
     "claude-code",

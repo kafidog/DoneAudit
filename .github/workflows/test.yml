@@ -2,7 +2,9 @@ name: test
 
 on:
   push:
+    paths-ignore: ['docs/chatgpt_review/**']
   pull_request:
+    paths-ignore: ['docs/chatgpt_review/**']
 
 jobs:
   test:

@@ -1,0 +1,10 @@
+{
+  "name": "doneaudit-real-demo",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test": "node --test math.test.js",
+    "build": "node --check math.js",
+    "lint": "node check.js"
+  }
+}

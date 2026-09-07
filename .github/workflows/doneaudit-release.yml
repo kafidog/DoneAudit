@@ -1,0 +1,35 @@
+name: DoneAudit release gate
+on:
+  push:
+    paths-ignore: ['docs/chatgpt_review/**']
+  pull_request:
+    paths-ignore: ['docs/chatgpt_review/**']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: DoneAudit regression tests
+        run: npm test
+      - name: Build and required checks
+        run: |
+          npm run build
+          npm run check
+      - name: Install package and replay real Codex demo
+        run: npm run demo
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: doneaudit-${{ matrix.os }}
+          path: artifacts/demo-*/
+          include-hidden-files: true

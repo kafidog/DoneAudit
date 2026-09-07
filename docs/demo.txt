@@ -1,0 +1,32 @@
+REAL WINDOWS DEMO — Codex CLI 0.153.4
+
+Before Codex (intentional false completion claim):
+AI claims: Done
+
+DoneAudit
+Trust score: 70 / 100 🔴
+
+❌ test: FAILED — Command failed or could not execute
+✅ build: PASSED — Executed successfully; receipt and log verified
+✅ required: PASSED — Executed successfully; receipt and log verified
+✅ Git state: PASSED — Evidence matches current HEAD and tracked/untracked source bytes
+✅ Completion evidence: PASSED — Completion claim and all execution results present
+
+Status: FAILED
+Conclusion: Cannot confirm completion
+
+After Codex fixed math.js and generated its completion claim:
+AI claims: Done
+
+DoneAudit
+Trust score: 100 / 100 🟢
+
+✅ test: PASSED — Executed successfully; receipt and log verified
+✅ build: PASSED — Executed successfully; receipt and log verified
+✅ required: PASSED — Executed successfully; receipt and log verified
+✅ Git state: PASSED — Evidence matches current HEAD and tracked/untracked source bytes
+✅ Completion evidence: PASSED — Completion claim and all execution results present
+
+Status: VERIFIED
+Conclusion: Verified against configured checks
+

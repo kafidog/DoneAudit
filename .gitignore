@@ -17,3 +17,8 @@ HANDOFF.md
 
 # External feedback — never committed (tracked separately)
 feedbacks/
+
+/.doneaudit/evidence/
+/artifacts/
+/node_modules/
+*.tgz

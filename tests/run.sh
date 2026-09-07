@@ -354,7 +354,7 @@ PKG="$REPO/package.json"
 BIN="$REPO/bin/agent-done-or-not.js"
 
 # 42. package.json is valid JSON with the expected name, version, and bin mapping.
-python3 -c "import json,sys; d=json.load(open(sys.argv[1])); assert d.get('name')=='agent-done-or-not'; assert d.get('version'); assert d.get('bin',{}).get('agent-done-or-not')=='bin/agent-done-or-not.js'" "$PKG" >/dev/null 2>&1 \
+python3 -c "import json,sys; d=json.load(open(sys.argv[1])); assert d.get('name')=='doneaudit'; assert d.get('version')=='0.1.0'; assert d.get('bin',{}).get('doneaudit')=='bin/doneaudit.js'; assert d.get('bin',{}).get('agent-done-or-not')=='bin/agent-done-or-not.js'" "$PKG" >/dev/null 2>&1 \
   && ok "package.json declares name, version, and bin mapping" || bad "package.json"
 
 # 43. the npm bin shim exists and is executable.
