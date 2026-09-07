@@ -20,6 +20,12 @@ Conclusion: Cannot confirm completion
 Install inside your Git project (Node.js 18+, Git; PowerShell on Windows, Bash elsewhere):
 
 ```sh
+npx doneaudit@0.1.0 init
+```
+
+GitHub v0.1.0 fallback installation:
+
+```sh
 npx --yes --package=https://github.com/kafidog/DoneAudit/archive/refs/tags/v0.1.0.tar.gz doneaudit init
 ```
 
