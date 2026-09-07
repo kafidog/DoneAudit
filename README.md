@@ -50,6 +50,37 @@ a toolchain other than Node.js.
 
 [Real Windows terminal result](docs/demo.txt) · [GitHub checks](https://github.com/kafidog/DoneAudit/actions) · [Releases](https://github.com/kafidog/DoneAudit/releases)
 
+## GitHub Action
+
+For npm projects with a committed package-lock.json, add this workflow and adjust
+the check commands to your project:
+
+```yaml
+name: DoneAudit
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm ci
+      - uses: kafidog/DoneAudit@v0.1.1
+        with:
+          mode: verify
+          checks: |
+            test: npm test
+            build: npm run build
+            lint: npm run lint
+```
+
+The Action reruns checks through the retained receipt gate and reports pass/fail
+in the job summary. The npm/Codex flow provides the 0–100 evidence score.
+
 ## What gets verified?
 
 | Evidence | Points |

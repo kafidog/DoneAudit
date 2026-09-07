@@ -1,5 +1,5 @@
-name: Agent Done Or Not
-description: Gate a GitHub Actions job on proof-of-done receipts (assert committed receipts, or verify by re-running checks fresh).
+name: DoneAudit - Verify AI Completion
+description: Verify real test, build and Git evidence before accepting an AI coding agent's “done”.
 
 # Shown on the GitHub Marketplace listing. icon = a Feather icon name; color is
 # one of white/black/yellow/blue/green/orange/red/purple/gray-dark.
