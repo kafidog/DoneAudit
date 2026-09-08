@@ -66,3 +66,18 @@ supports stop/finish hooks.
 - 證據少而有效，不按代理角色複製大量報告/ZIP。
 - 只修改當前 Issue 最小必要範圍；禁止 `git reset --hard`、`git clean -fd`、force push、改寫已發布歷史或刪除未知資料。
 - 只有 P0/P1=0、scope drift=0、必要 proof/evidence 完成且 Sol Gate 通過，才可宣稱該 Delivery Issue PASS。
+
+## GitHub 交接與同步（每個 Delivery Issue 結束必做）
+
+GitHub 是跨工作階段的唯一交接來源。Owner 不應再需要把已存在 GitHub 的報告、Markdown 或 ZIP 重新上傳給下一個 AI。
+
+每個 Delivery Issue 完成、PARTIAL、FAIL 或 BLOCKED 時，在最後回覆前必須：
+1. 更新或建立根目錄唯一 `CODEX_HANDOFF.md`，不得建立日期版/代理版重複 handoff；至少記錄 Current Goal、Issue、branch/HEAD、RESULT、FILES_CHANGED、USER_VISIBLE_RESULT、VALIDATION、EVIDENCE、KNOWN_ISSUES、未驗證項目、Blocker、rollback、`NEXT_SINGLE_ACTION`。
+2. 若有 GitHub Delivery Issue 且環境可寫入 GitHub，回填 RESULT / VALIDATION / EVIDENCE / COMMIT / NEXT_SINGLE_ACTION；若無 Issue 寫入能力，不得假裝已回填，但 handoff 與 Git push 仍為必做。
+3. 只 stage 本 Issue 可安全歸屬且已驗證修改，建立清楚 commit；未知 dirty work 不得混入。
+4. 將 commit、最新 `CODEX_HANDOFF.md` 與本輪必要 proof receipt/ledger 更新（若屬追蹤檔且不含敏感資料）**push 到 GitHub 遠端**。使用目前追蹤 branch；無 upstream 時安全使用 `git push -u origin <branch>`。禁止 force push。
+5. 若採 PR/受保護分支流程，只 push 工作 branch 並留下 PR/commit 參照；不得繞過保護、merge、deploy、release 或公開發布，除非當前授權明確允許。
+6. push 後驗證本機 HEAD 已存在遠端追蹤 branch，最終回報必寫 `GITHUB_SYNC=PUSHED` 與 commit SHA；任何「已同步」主張也不得超出實際 Git 證據。
+7. 若因憑證、網路、remote 權限或 branch protection 無法 push，保留本機 commit，寫 `GITHUB_SYNC=BLOCKED`、原始錯誤、尚未上傳 commit SHA 與恢復條件；產品/Proof 結果與 GitHub 同步結果分開。
+
+此規則是 Owner 對一般 Git source-control 同步與 handoff 更新的持續授權；**不等於** deployment、release publication、社群發布、付款、OAuth/2FA 或其他高風險外部操作授權。Proof-of-Done Gate 仍然完整生效。
