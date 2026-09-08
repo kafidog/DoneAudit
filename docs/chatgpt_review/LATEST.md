@@ -1,8 +1,8 @@
 # DoneAudit — latest handoff
 
 ## 本輪唯一目標
-提交 DoneAudit 到 Awesome Codex CLI。
-結果：DONEAUDIT_AWESOME_PR_SUBMITTED。
+進入外部等待，只保留恢復條件。
+結果：DONEAUDIT_EXTERNAL_WAIT。
 
 ## 投稿
 - 目標：https://github.com/RoggeOhta/awesome-codex-cli
@@ -39,8 +39,32 @@
 - 上游 mohamedzhioua/agent-done-or-not，MIT，Copyright (c) 2026 Zhioua Mohamed 保留。
 
 ## 下一個唯一動作
-等待該清單 maintainer 審查，同時等待第一個真正 DoneAudit 外部使用證據。
-不要因等待新增功能；本輪未設定自動監看。
+等待以下任一新證據：
+
+1. Awesome Codex CLI PR #246 maintainer 回應
+2. 第一個真正 DoneAudit Star
+3. 第一個真正外部 Issue / PR
+4. 第一個可驗證第三方安裝或 repository 採用
+
+其他有效恢復證據：真正第三方 Discussion 回覆、可驗證 npm 外部下載證據、GitHub Marketplace 可驗證外部使用訊號。
+PR 事件包括留言、要求修改、Approved、Merged、Closed / Rejected。
+
+目前只有外部等待；依 PROJECT_DELIVERY_RULES 結束本輪，不建立 AI 監控或額外工作。
+不建立定時巡邏、不讓代理持續等待、不新增功能、不發布版本、不追加投稿或宣傳、不重跑產品測試、不重新規劃。
+沒有新證據不要自行繼續開工。
+
+## 恢復後規則
+- PR 要求修改：只處理 maintainer 明確要求的最小修改，不順便修改 DoneAudit。
+- PR 合併：記錄 INDEPENDENT_CURATION=PASS，但不當作第三方實際使用。
+- 首次真正外部 Issue：先閱讀並確認可重現，再做最小修正、只測受影響範圍；必要才發布 patch。
+- 首次 Star：記錄真實時間與數量，不因此發布新版本。
+- 真正外部安裝或 repository 採用：保存公開可驗證連結，記錄 THIRD_PARTY_ADOPTION=PASS。
+
+## 本輪結束快照（2026-09-08 08:16 UTC+8）
+GitHub 即時查詢：PR #246 OPEN、非 Draft、MERGEABLE，comments 0、reviews 0。
+DoneAudit Stars 0；所有狀態 Issue 0、PR 0；第三方採用證據尚未取得。
+其他數據沿用上方附時間的已知快照，沒有將未取得數據估算為 0。
+本輪僅更新此交接，不建立任何自動監控或持續等待程序。
 
 ## 真正需要本人操作
 無人工阻塞。
