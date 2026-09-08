@@ -1,3 +1,23 @@
+# Current DoneAudit integration checkpoint
+
+- CURRENT_GOAL: resume existing persistent context and integrate the single DoneAudit engine; governance-only.
+- CURRENT_BRANCH: resolve `git branch --show-current`; CURRENT_HEAD: resolve `git rev-parse HEAD`. Integration input: `2900f2dec4c8f6905412e23e8947b45eb1071bd2`.
+- LAST_VERIFIED_STATE: central source `2900f2dec4c8f6905412e23e8947b45eb1071bd2` passed five Node regression cases, build/check syntax, 134 local Git Bash/upstream checks, and all three GitHub workflows (test, Action self-test, DoneAudit release gate). The later self-integration delta is governance-only; fresh source-bound proof is `.doneaudit/evidence/result.json`.
+- COMPLETED: previous governance commit retained; installer/configuration wired to source pin `2900f2dec4c8f6905412e23e8947b45eb1071bd2` (unreleased source, not npm 0.1.0).
+- ACTIVE_WORK: governance integration only; no unrelated product flow is being executed.
+- LOCKED_DECISIONS: No new features, release, marketing submission, full test rerun or automated monitor merely to fill external wait. DoneAudit governance scope never replaces product acceptance or the final reviewer.
+- KNOWN_BLOCKERS: No local implementation blocker recorded. Central regression evidence and GitHub CI must be reviewed separately from this governance-only gate.
+- EVENT_PENDING: New portable source is not npm/Marketplace released; historical adoption wait remains separate. Central portable source is not a published npm/Marketplace release.
+- UNVERIFIED: npm/Marketplace publication of portable features and genuine external adoption. CI source validation is complete for `2900f2d`, not a new release claim. Other products' runtime/Production acceptance was not rerun.
+- NEXT_SINGLE_ACTION: run `node .doneaudit/tool/bin/doneaudit.js run` after any final edit/commit; review exact scope, then safe Git sync. Product resumption remains: Complete this authorized portable integration; do not start marketing or unrelated product features.
+
+`doneaudit.config.json` lists actual reference, pinned-byte and exact-diff allowlist checks, not product test/build substitutes. One installer-owned completion block is in AGENTS.md. CI re-executes the same governance commands with a proof-only Node bootstrap. A later product Issue must select its real product checks and acceptance scope; never reuse this governance-only result as product completion.
+
+Central CI evidence: [release gate](https://github.com/kafidog/DoneAudit/actions/runs/34253983450), [upstream platform tests](https://github.com/kafidog/DoneAudit/actions/runs/34253983423), [Action self-test](https://github.com/kafidog/DoneAudit/actions/runs/34253983435). Source pin remains immutable; consumers do not follow `latest`.
+
+## Carried-forward project truth
+
+
 # Current recovery checkpoint — DoneAudit portable integration
 
 - CURRENT_GOAL: RESUME_AND_INTEGRATE_PERSISTENT_CONTEXT_DONEAUDIT; only the portable integration needed by the portfolio is newly authorized.

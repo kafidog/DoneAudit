@@ -30,38 +30,11 @@ Update the single current handoff with CURRENT_HEAD/BRANCH, LAST_VERIFIED_STATE,
 
 Preserve unrelated dirty work. Stage only reviewed task files; no reset/clean/force push/history rewrite. Separate source sync from release/deploy/account authorization. Commit and push the safe current branch; verify local and remote HEAD equality before claiming GITHUB_SYNC=PUSHED. If unavailable, retain the commit and report exact blocker. Documentation-only validation checks references, Markdown and diff, never reruns the product suite for ceremony.
 
-# Proof-of-Done Rule (agent-done-or-not)
-
-Applies to any agent operating in this repo (Codex, and other harnesses that
-read `AGENTS.md`).
-
-Before reporting a task complete, you MUST verify it through the proof gate.
-Claiming "done" without a passing receipt is not allowed.
-
-1. Run the verifying command through the gate:
-
-   ```bash
-   bash done-gate.sh capture --label check -- <your verifying command>
-   ```
-
-   It records the command, its exit code, and a SHA-256 of the output, and exits
-   with the command's own code — so a failing check fails here.
-2. Only report completion after a PASSING receipt.
-3. If the check fails, fix the code and capture again. Never report success on a
-   red check.
-
-## Claim markers (for `audit`)
-
-When you assert a check passed, also emit a claim marker in your final summary so
-`done-gate.sh audit` can diff the claim against the receipt ledger:
-
-```
-<agent-done:claim label="test" exit="0" />
-```
-
-Use the same `--label` you passed to `capture`; omitting `exit` asserts a pass.
-An unbacked marker is caught by `audit`. Full contract and paste-ready
-instruction: [`docs/markers.md`](docs/markers.md).
-
-See `examples/install.md` for wiring a hard stop-gate where your harness
-supports stop/finish hooks.
+<!-- doneaudit:start -->
+## DoneAudit completion rule
+Before claiming completion, write doneaudit.claim.json with {"completed":true,"summary":"what you changed"} and the exact config scope when governance-only.
+Then run `node .doneaudit/tool/bin/doneaudit.js run`. This executes configured checks and produces evidence automatically.
+Only describe the configured scope as verified when it exits 0 and reports VERIFIED. Governance-only evidence is NEVER product acceptance. If it fails, report FAILED or INSUFFICIENT EVIDENCE honestly.
+The final reviewer still checks Issue acceptance, scope, runtime requirements and current handoff; DoneAudit is not that review.
+Do not weaken tests, edit DoneAudit tooling/configuration, or manufacture receipts to obtain a passing score.
+<!-- doneaudit:end -->

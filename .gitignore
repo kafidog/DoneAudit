@@ -22,3 +22,5 @@ feedbacks/
 /artifacts/
 /node_modules/
 *.tgz
+
+/.agent-proof/
