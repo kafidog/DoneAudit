@@ -23,6 +23,8 @@ Install inside your Git project (Node.js 18+, Git; PowerShell on Windows, Bash e
 npx doneaudit@0.1.0 init
 ```
 
+GitHub Marketplace: [DoneAudit - Verify AI Completion](https://github.com/marketplace/actions/doneaudit-verify-ai-completion)
+
 GitHub v0.1.0 fallback installation:
 
 ```sh
