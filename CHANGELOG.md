@@ -6,6 +6,15 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### DoneAudit portable context integration
+
+- Add opt-in `init --portable` / `--no-workflow` without changing the product
+  dependency model or overwriting existing workflows; preserve modified vendored
+  tools and record installation hashes.
+- Add explicit governance-only evidence scope and matching claim requirement.
+  Product scoring, missing-category rejection and receipt/source binding remain.
+- These changes are repository-source only, not npm 0.1.0 / Marketplace v0.1.1.
+
 ## [0.13.1] — 2026-07-20
 
 Patch release. Fixes the composite Action failing to load (a v0.13.0

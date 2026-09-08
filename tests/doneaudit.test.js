@@ -89,3 +89,66 @@ test('invalid and duplicate configuration fail closed', () => {
   f.config.checks[1].label = 'test'; f.setConfig();
   assert.equal(f.invoke('run').status, 2);
 });
+
+test('portable init preserves project model, unknown workflow and managed rule ownership', () => {
+  const f = fixture();
+  const agents = path.join(f.cwd, 'AGENTS.md');
+  const workflow = path.join(f.cwd, '.github/workflows/doneaudit.yml');
+  const originalWorkflow = 'name: existing-owner-workflow\n';
+  fs.writeFileSync(workflow, originalWorkflow);
+  fs.appendFileSync(agents, '\nOwner rule must survive.\n');
+  assert.equal(f.invoke('init', '--portable').status, 0);
+  const first = fs.readFileSync(agents, 'utf8');
+  assert.equal(f.invoke('init', '--portable').status, 0);
+  assert.equal(fs.readFileSync(agents, 'utf8'), first);
+  assert.match(first, /Owner rule must survive/);
+  assert.equal(first.split('<!-- doneaudit:start -->').length, 2);
+  assert.equal(fs.readFileSync(workflow, 'utf8'), originalWorkflow);
+  assert.equal(fs.existsSync(path.join(f.cwd, 'package.json')), false);
+  assert.equal(fs.existsSync(path.join(f.cwd, 'package-lock.json')), false);
+  assert.equal(fs.readFileSync(path.join(f.cwd, '.doneaudit/.gitattributes'), 'utf8'), '/tool/** -text\n');
+  fs.unlinkSync(workflow);
+  assert.equal(f.invoke('init', '--portable', '--no-workflow').status, 0);
+  assert.equal(fs.existsSync(workflow), false);
+  assert.equal(f.invoke('init', '--portable').status, 0);
+  assert.doesNotMatch(fs.readFileSync(workflow, 'utf8'), /npm (ci|install)/);
+  const tool = path.join(f.cwd, '.doneaudit/tool/bin/execute-check.js');
+  fs.appendFileSync(tool, '// owner modification\n');
+  const modified = fs.readFileSync(tool, 'utf8');
+  assert.equal(f.invoke('init', '--portable').status, 2);
+  assert.equal(fs.readFileSync(tool, 'utf8'), modified);
+});
+
+test('malformed markers and foreign tool directories fail before changing project configuration', () => {
+  const f = fixture();
+  const agents = path.join(f.cwd, 'AGENTS.md');
+  const malformed = '<!-- doneaudit:start -->owner content';
+  fs.writeFileSync(agents, malformed);
+  assert.equal(f.invoke('init', '--portable').status, 2);
+  assert.equal(fs.readFileSync(agents, 'utf8'), malformed);
+  fs.writeFileSync(agents, 'Owner content\n');
+  fs.unlinkSync(path.join(f.cwd, '.doneaudit/tool/doneaudit-install.json'));
+  const before = fs.readFileSync(path.join(f.cwd, 'doneaudit.config.json'), 'utf8');
+  assert.equal(f.invoke('init', '--portable').status, 2);
+  assert.equal(fs.readFileSync(path.join(f.cwd, 'doneaudit.config.json'), 'utf8'), before);
+});
+
+test('governance evidence has explicit scope, source binding and no product-category bypass', () => {
+  const f = fixture();
+  f.config.scope = 'governance-only';
+  f.config.checks = [{ label: 'governance', group: 'required', command: 'git diff --check' }];
+  f.setConfig();
+  assert.equal(f.invoke('run').status, 2, 'a product claim cannot satisfy governance scope');
+  fs.writeFileSync(path.join(f.cwd, 'doneaudit.claim.json'), JSON.stringify({ completed: true, scope: 'governance-only', summary: 'Whitespace validation only; not product acceptance' }));
+  let run = f.invoke('run');
+  assert.equal(run.status, 0, run.stdout + run.stderr);
+  assert.equal(f.result().scope, 'governance-only');
+  assert.match(f.result().conclusion, /NOT product acceptance/);
+  fs.appendFileSync(path.join(f.cwd, 'source.js'), '// after evidence\n');
+  assert.equal(f.invoke('report').status, 2);
+  f.config.scope = 'product'; f.setConfig();
+  f.claim();
+  assert.equal(f.invoke('run').status, 2, 'product still requires missing test/build categories');
+  f.config.scope = 'unknown'; f.setConfig();
+  assert.equal(f.invoke('run').status, 2);
+});

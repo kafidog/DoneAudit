@@ -1,4 +1,20 @@
-# Current recovery checkpoint — 2026-09-09
+# Current recovery checkpoint — DoneAudit portable integration
+
+- CURRENT_GOAL: RESUME_AND_INTEGRATE_PERSISTENT_CONTEXT_DONEAUDIT; only the portable integration needed by the portfolio is newly authorized.
+- CURRENT_BRANCH: main; CURRENT_HEAD: resolve `git rev-parse HEAD`; input baseline `6c1dadda8c5413f5065e5bf6d1a89a3de362abfd`.
+- LAST_VERIFIED_STATE: five central Node regression cases passed on Windows; build/check syntax passed. Cross-platform validation and rollout remain in progress; do not infer final acceptance yet.
+- COMPLETED: opt-in portable/no-workflow installation, owned marker merge, vendored hash protection, explicit governance-only scope and matching claims. Existing product missing-category rejection remains.
+- ACTIVE_WORK: verify central source, pin its commit, then rollout only governance files to existing project branches.
+- LOCKED_DECISIONS: one DoneAudit engine, no parallel checker; no fake npm project; no change to upstream receipts or product acceptance. Governance-only VERIFIED is not product COMPLETE.
+- KNOWN_BLOCKERS: none asserted for local implementation; remote CI/release evidence still required before corresponding claims.
+- EVENT_PENDING: source changes are unreleased; npm remains 0.1.0, Marketplace/Action v0.1.1 remains `866a945a949cc3ce8700ef3338a9fba54f5bd40e`. Do not publish or claim a new release from source sync.
+- UNVERIFIED: actual full portfolio rollout, independent Unix CI, release publication and new third-party adoption.
+- NEXT_SINGLE_ACTION: complete the bounded portable rollout and review its scope/source-bound receipts; no marketing or unrelated feature work.
+- OLD_BASELINE: DONEAUDIT_EXTERNAL_WAIT, no product work without a new request.
+- NEW_EVIDENCE: Owner's 2026-09-09 RESUME AND INTEGRATE mission explicitly authorizes the minimal common portable gap.
+- SUPERSEDED_DECISION: external-wait stop applies to adoption/marketing only; the newly authorized portable task may execute. Historical release/adoption evidence below remains carried forward, not rerun.
+
+## Previous checkpoint (historical)
 
 - CURRENT_HEAD: resolve `git rev-parse HEAD` at startup; governance baseline `be18d47e10bd2dbb6fad31dedd4a08a53db9943c`. Documentation commits after that baseline do not imply a new product validation.
 - CURRENT_BRANCH: `main`; confirm it with Git, do not silently switch branches.

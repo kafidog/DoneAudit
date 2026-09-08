@@ -11,6 +11,7 @@ const EVIDENCE = '.doneaudit/evidence';
 const CONFIG = 'doneaudit.config.json';
 const CLAIM = 'doneaudit.claim.json';
 const weights = { test: 30, build: 20, required: 25 };
+const TOOL_FILES = ['bin/doneaudit.js', 'bin/execute-check.js', 'bin/agent-done-or-not.js', 'done-gate.sh', 'done-gate.ps1', 'stop-gate.sh', 'stop-gate.ps1', 'subagent-audit.sh', 'subagent-audit.ps1', 'LICENSE', 'THIRD_PARTY_NOTICES.md', 'package.json'];
 const hash = value => crypto.createHash('sha256').update(value).digest('hex');
 function read(file) { return JSON.parse(fs.readFileSync(file, 'utf8').replace(/^\uFEFF/, '')); }
 function write(file, value) { fs.mkdirSync(path.dirname(file), { recursive: true }); fs.writeFileSync(file, typeof value === 'string' ? value : JSON.stringify(value, null, 2) + '\n'); }
@@ -40,6 +41,8 @@ function snapshot() {
 function config() {
   const c = read(CONFIG);
   if (c.version !== 1 || !Array.isArray(c.checks) || !c.checks.length) throw new Error('Config needs version: 1 and nonempty checks.');
+  if (c.scope !== undefined && !['product', 'governance-only'].includes(c.scope)) throw new Error('Unknown evidence scope.');
+  if (c.scope === 'governance-only' && c.checks.some(check => check.group !== 'required')) throw new Error('Governance-only checks must use group required, never product test/build categories.');
   const labels = new Set();
   for (const check of c.checks) {
     if (!check || !/^[a-zA-Z0-9_-]+$/.test(check.label) || labels.has(check.label) || !Object.hasOwn(weights, check.group) || !(check.command === null || (typeof check.command === 'string' && check.command.trim()))) throw new Error('Invalid/duplicate check: ' + JSON.stringify(check));
@@ -49,38 +52,57 @@ function config() {
 }
 function same(a, b) { return a && b && a.head === b.head && a.digest === b.digest; }
 function claimValid() {
-  try { const c = read(CLAIM); return c.completed === true && typeof c.summary === 'string' && c.summary.trim().length > 0; } catch { return false; }
+  try { const c = read(CLAIM); const scope = config().scope || 'product'; return c.completed === true && typeof c.summary === 'string' && c.summary.trim().length > 0 && (scope === 'product' ? (!c.scope || c.scope === 'product') : c.scope === scope); } catch { return false; }
 }
-function init() {
+function init(options = []) {
+  if (options.some(option => !['--portable', '--no-workflow'].includes(option))) throw new Error('Unknown init option.');
   snapshot();
+  const target = path.resolve('.doneaudit/tool');
+  let agents = fs.existsSync('AGENTS.md') ? fs.readFileSync('AGENTS.md', 'utf8') : '';
+  const starts = (agents.match(/<!-- doneaudit:start -->/g) || []).length;
+  const ends = (agents.match(/<!-- doneaudit:end -->/g) || []).length;
+  if (starts !== ends || (starts && !/<!-- doneaudit:start -->[\s\S]*?<!-- doneaudit:end -->/.test(agents))) throw new Error('Malformed DoneAudit markers; preserve and review AGENTS.md.');
+  if (/<!-- doneaudit:(start|end) -->/.test(agents.replace(/<!-- doneaudit:start -->(?:(?!<!-- doneaudit:start -->)[\s\S])*?<!-- doneaudit:end -->/g, ''))) throw new Error('Nested or unmatched DoneAudit markers; preserve and review AGENTS.md.');
+  const attributes = '.doneaudit/.gitattributes';
+  if (fs.existsSync(attributes) && fs.readFileSync(attributes, 'utf8').trim() !== '/tool/** -text') throw new Error('Existing DoneAudit attributes require review; refusing to change byte preservation rules.');
+  if (ROOT !== target && fs.existsSync(target)) {
+    const marker = path.join(target, 'doneaudit-install.json');
+    if (!fs.existsSync(marker) || read(marker).version !== '0.1.0') throw new Error('Existing tool directory is not a DoneAudit v0.1.0 installation.');
+    const installed = read(marker);
+    for (const file of TOOL_FILES) {
+      const dest = path.join(target, file);
+      if (!fs.existsSync(dest)) throw new Error('Incomplete existing DoneAudit installation: ' + file);
+      const expected = installed.files && installed.files[file];
+      if (hash(fs.readFileSync(dest)) !== (expected || hash(fs.readFileSync(path.join(ROOT, file))))) throw new Error('Modified vendored tool; preserve and review: ' + file);
+    }
+  }
   if (!fs.existsSync(CONFIG)) {
-    let scripts = {}; try { scripts = read('package.json').scripts || {}; } catch {}
+    let scripts = {}; if (!options.includes('--portable')) { try { scripts = read('package.json').scripts || {}; } catch {} }
     write(CONFIG, { version: 1, checks: [
       { label: 'test', group: 'test', command: scripts.test ? 'npm test' : null },
       { label: 'build', group: 'build', command: scripts.build ? 'npm run build' : null },
       { label: 'required', group: 'required', command: scripts.lint ? 'npm run lint' : scripts.check ? 'npm run check' : null }
     ] });
   }
-  const target = path.resolve('.doneaudit/tool');
-  if (ROOT !== target && fs.existsSync(target)) {
-    const marker = path.join(target, 'doneaudit-install.json');
-    if (!fs.existsSync(marker) || read(marker).version !== '0.1.0') throw new Error('Existing tool directory is not a DoneAudit v0.1.0 installation.');
-  }
   if (ROOT !== target) {
-    for (const file of ['bin/doneaudit.js', 'bin/execute-check.js', 'bin/agent-done-or-not.js', 'done-gate.sh', 'done-gate.ps1', 'stop-gate.sh', 'stop-gate.ps1', 'subagent-audit.sh', 'subagent-audit.ps1', 'LICENSE', 'THIRD_PARTY_NOTICES.md', 'package.json']) {
-      write(path.join(target, file), fs.readFileSync(path.join(ROOT, file), 'utf8'));
+    const files = {};
+    for (const file of TOOL_FILES) {
+      write(path.join(target, file), fs.readFileSync(path.join(ROOT, file), 'utf8').replace(/\r\n/g, '\n'));
+      files[file] = hash(fs.readFileSync(path.join(target, file)));
     }
-    write(path.join(target, 'doneaudit-install.json'), { version: '0.1.0' });
+    const source = spawnSync('git', ['rev-parse', '--show-toplevel'], { cwd: ROOT, encoding: 'utf8' });
+    const revision = source.status === 0 && path.resolve(source.stdout.trim()) === ROOT ? spawnSync('git', ['rev-parse', 'HEAD'], { cwd: ROOT, encoding: 'utf8' }).stdout.trim() : null;
+    write(path.join(target, 'doneaudit-install.json'), { version: '0.1.0', files, sourceRevision: revision });
   }
-  const rule = '\n<!-- doneaudit:start -->\n## DoneAudit completion rule\nBefore claiming completion, write doneaudit.claim.json with {"completed":true,"summary":"what you changed"}.\nThen run `node .doneaudit/tool/bin/doneaudit.js run`. This executes configured checks and produces evidence automatically.\nOnly describe the work as verified when it exits 0 and reports VERIFIED. If it fails, report FAILED or INSUFFICIENT EVIDENCE honestly.\nDo not weaken tests, edit DoneAudit tooling/configuration, or manufacture receipts to obtain a passing score.\n<!-- doneaudit:end -->\n';
-  let agents = fs.existsSync('AGENTS.md') ? fs.readFileSync('AGENTS.md', 'utf8') : '';
+  write(attributes, '/tool/** -text\n');
+  const rule = '\n<!-- doneaudit:start -->\n## DoneAudit completion rule\nBefore claiming completion, write doneaudit.claim.json with {"completed":true,"summary":"what you changed"} and the exact config scope when governance-only.\nThen run `node .doneaudit/tool/bin/doneaudit.js run`. This executes configured checks and produces evidence automatically.\nOnly describe the configured scope as verified when it exits 0 and reports VERIFIED. Governance-only evidence is NEVER product acceptance. If it fails, report FAILED or INSUFFICIENT EVIDENCE honestly.\nThe final reviewer still checks Issue acceptance, scope, runtime requirements and current handoff; DoneAudit is not that review.\nDo not weaken tests, edit DoneAudit tooling/configuration, or manufacture receipts to obtain a passing score.\n<!-- doneaudit:end -->\n';
   agents = agents.replace(/\n?<!-- doneaudit:start -->[\s\S]*?<!-- doneaudit:end -->\n?/g, '');
   write('AGENTS.md', agents + rule);
   let ignore = fs.existsSync('.gitignore') ? fs.readFileSync('.gitignore', 'utf8') : '';
   for (const line of ['/.doneaudit/evidence/', '/.agent-proof/']) if (!ignore.split(/\r?\n/).includes(line)) ignore += '\n' + line + '\n';
   write('.gitignore', ignore);
   const workflow = '.github/workflows/doneaudit.yml';
-  if (!fs.existsSync(workflow)) write(workflow, `name: DoneAudit\non: [push, pull_request, workflow_dispatch]\npermissions:\n  contents: read\njobs:\n  audit:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-node@v4\n        with:\n          node-version: '22'\n      - name: Install project dependencies\n        shell: bash\n        run: |\n          if [ -f package-lock.json ]; then npm ci; elif [ -f package.json ]; then npm install; fi\n      - name: Verify completion\n        run: node .doneaudit/tool/bin/doneaudit.js run\n      - uses: actions/upload-artifact@v4\n        if: always()\n        with:\n          name: doneaudit-evidence\n          path: .doneaudit/evidence/\n          include-hidden-files: true\n`);
+  if (!options.includes('--no-workflow') && !fs.existsSync(workflow)) write(workflow, `name: DoneAudit\non: [push, pull_request, workflow_dispatch]\npermissions:\n  contents: read\njobs:\n  audit:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n        with:\n          fetch-depth: 0\n      - uses: actions/setup-node@v4\n        with:\n          node-version: '22'\n${options.includes('--portable') ? '' : '      - name: Install project dependencies\n        shell: bash\n        run: |\n          if [ -f package-lock.json ]; then npm ci; elif [ -f package.json ]; then npm install; fi\n'}      - name: Verify completion\n        run: node .doneaudit/tool/bin/doneaudit.js run\n      - uses: actions/upload-artifact@v4\n        if: always()\n        with:\n          name: doneaudit-evidence\n          path: .doneaudit/evidence/\n          include-hidden-files: true\n`);
   console.log('DoneAudit installed. Codex completion rules and GitHub workflow are ready.\nReview doneaudit.config.json: replace null commands with your real checks.\nStart Codex normally. Commit the generated files and completion claim for GitHub verification.');
 }
 function run() {
@@ -137,7 +159,7 @@ function evaluate() {
     items.push({ label: check.label, group: check.group, status, reason, recorded });
   }
   let score = 0;
-  for (const [group, weight] of Object.entries(weights)) {
+  for (const [group, weight] of Object.entries(c.scope === 'governance-only' ? { required: 75 } : weights)) {
     const rows = items.filter(i => i.group === group);
     if (!rows.length) items.push({ label: group, group, status: 'insufficient', reason: 'Required evidence category is not configured' });
     else score += Math.floor(weight * rows.filter(i => i.status === 'passed').length / rows.length);
@@ -149,7 +171,7 @@ function evaluate() {
   items.push({ label: 'Completion evidence', status: complete ? 'passed' : 'insufficient', reason: complete ? 'Completion claim and all execution results present' : 'Need a completion claim and complete execution evidence' });
   if (complete) score += 15;
   const status = items.some(i => i.status === 'failed') ? 'FAILED' : items.some(i => i.status === 'insufficient') ? 'INSUFFICIENT EVIDENCE' : 'VERIFIED';
-  return { version: '0.1.0', score, status, conclusion: status === 'VERIFIED' ? 'Verified against configured checks' : 'Cannot confirm completion', commit: current.head, sourceDigest: current.digest, items };
+  return { version: '0.1.0', scope: c.scope || 'product', score, status, conclusion: status === 'VERIFIED' ? (c.scope === 'governance-only' ? 'Governance checks verified; NOT product acceptance' : 'Verified against configured checks') : 'Cannot confirm completion', commit: current.head, sourceDigest: current.digest, items };
 }
 function format(result) {
   const icons = { passed: '✅', failed: '❌', insufficient: '⚠️' };
@@ -166,10 +188,10 @@ function report(result = evaluate()) {
 if (require.main === module) {
   try {
     const command = process.argv[2];
-    if (command === 'init') init();
+    if (command === 'init') init(process.argv.slice(3));
     else if (command === 'run') process.exitCode = run();
     else if (command === 'report') process.exitCode = report();
-    else if (!command || ['help', '--help', '-h'].includes(command)) console.log('DoneAudit v0.1.0\n  doneaudit init    Install Codex rules and GitHub checks\n  doneaudit run     Execute checks, collect receipts, and score\n  doneaudit report  Validate existing evidence without rerunning checks\nRequires Node 18+, Git and Bash (Unix) or PowerShell (Windows).');
+    else if (!command || ['help', '--help', '-h'].includes(command)) console.log('DoneAudit v0.1.0\n  doneaudit init [--portable] [--no-workflow]    Install Codex rules and GitHub checks\n  doneaudit run     Execute checks, collect receipts, and score\n  doneaudit report  Validate existing evidence without rerunning checks\nRequires Node 18+, Git and Bash (Unix) or PowerShell (Windows). Portable skips product npm detection/bootstrap; it does not remove the proof engine Node requirement.');
     else throw new Error('Unknown command: ' + command);
   } catch (error) {
     const failure = { version: '0.1.0', score: 0, status: 'INSUFFICIENT EVIDENCE', conclusion: 'Cannot confirm completion', items: [{ label: 'Audit input', status: 'insufficient', reason: error.message }] };

@@ -131,6 +131,35 @@ node .doneaudit/tool/bin/doneaudit.js report
 
 ## Supported scope and trust boundary
 
+### Portable integration (repository HEAD; not in npm 0.1.0 / Action v0.1.1)
+
+Use a reviewed, immutable source commit for these new options; do not use `latest`
+or claim that the existing releases contain them. From that checkout, run its
+`bin/doneaudit.js init --portable` with the target Git root as the working directory.
+Node 18+, Git and PowerShell/Unix Bash are still proof-tool requirements, not
+product dependencies. No root package.json/package-lock is created. Portable CI
+sets up the proof runtime only; add the product's real toolchain bootstrap when
+an authorized product task requires it. `--no-workflow` omits CI creation.
+Existing workflows/configuration are preserved; modified vendored tool files and
+malformed AGENTS markers fail closed. Re-init owns only one doneaudit marker block.
+The vendored manifest records file SHA-256 and source revision when available;
+review those against the pinned upstream commit before accepting an update.
+
+For a strictly documentation-only task, an explicit configuration may use:
+
+```json
+{"version":1,"scope":"governance-only","checks":[{"label":"docs","group":"required","command":"git diff --check"}]}
+```
+
+This example proves whitespace only. Add actual reference, scope and document
+checks required by the task; an empty diff is not evidence of product acceptance.
+The claim must also say `"scope":"governance-only"`. The result explicitly says
+`NOT product acceptance`; its score covers only configured governance checks.
+Default/product mode still requires test, build and required categories and
+never treats missing checks as a pass. Do not switch a product Issue to governance
+scope to obtain a green result. Receipts remain bound to HEAD, source bytes and
+config, expire after one hour, and are invalidated by subsequent source edits.
+
 - Windows PowerShell and Unix Bash execution, with zero npm runtime dependencies.
 - Codex through project `AGENTS.md`. This is an instruction-based integration,
   not a hard Codex stop hook. GitHub independently reruns the checks.
