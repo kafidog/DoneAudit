@@ -1,3 +1,21 @@
+# Current recovery checkpoint — 2026-09-09
+
+- CURRENT_HEAD: resolve `git rev-parse HEAD` at startup; governance baseline `be18d47e10bd2dbb6fad31dedd4a08a53db9943c`. Documentation commits after that baseline do not imply a new product validation.
+- CURRENT_BRANCH: `main`; confirm it with Git, do not silently switch branches.
+- LAST_VERIFIED_STATE: DONEAUDIT_EXTERNAL_WAIT.
+- COMPLETED / VERIFIED: CARRIED_FORWARD: v0.1.1 release source 866a945a949cc3ce8700ef3338a9fba54f5bd40e, npm 0.1.0 and Marketplace status from the existing handoff; not republished or revalidated here.
+- ACTIVE_WORK: governance-only context adoption; no product execution authorized by this checkpoint.
+- KNOWN_BLOCKERS: EXTERNAL_WAIT: maintainer response or genuine third-party adoption evidence. HUMAN_AUTHORIZATION blocker: none recorded.
+- LOCKED_DECISIONS: No new features, release, marketing submission, full test rerun or automated monitor merely to fill external wait.
+- EVENT_PENDING: EVENT_PENDING: awesome-codex-cli PR #246 response or independently verifiable third-party signal. Counts/status below are 2026-09-08 snapshots, not a current live poll.
+- NEXT_EXECUTABLE_ISSUE: NONE_EXECUTABLE until a listed external event. PR #246 is upstream review, not permission for a new local feature.
+
+Evidence/source references: `README.md`, `CONTRIBUTING.md`, `docs/markers.md` (paths relative to repository root). Preserve accepted evidence unless new evidence or explicit requirements invalidate it; record OLD_BASELINE / NEW_EVIDENCE / SUPERSEDED_DECISION when reopening. A fresh agent must read current Git state and the selected Issue, not infer completion from this summary.
+
+## Carried-forward evidence and prior checkpoint
+
+The following product evidence is retained, not rerun in this governance task. Earlier “this round/current Git/sync” wording describes its original checkpoint; the recovery header above selects the current branch and scope.
+
 # DoneAudit — latest handoff
 
 ## 本輪唯一目標
