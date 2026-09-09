@@ -2,15 +2,15 @@
 
 - CURRENT_GOAL: One authorized root comment in r/ChatGPTCoding weekly promotion thread; no product changes.
 - CURRENT_BRANCH: main; CURRENT_HEAD: resolve live Git. Input HEAD f1a552024a34d67df7089026bc4abb3e747d3b9f.
-- LAST_VERIFIED_STATE: VERIFIED_BY_RUNTIME_OR_PRODUCTION: Reddit displayed successful comment submission and authenticated permalink readback with complete content and both correct links. Anonymous public visibility remains unverified.
+- LAST_VERIFIED_STATE: VERIFIED_BY_RUNTIME_OR_PRODUCTION: Reddit displayed successful comment submission and authenticated permalink readback with complete content and both correct links. Anonymous public visibility confirmed by the user in this conversation; user reports complete body, GitHub/Marketplace links and install command visible while signed out.
 - COMPLETED: exactly one submit under existing u/kafidog; no new account, no additional promotion.
-- ACTIVE_WORK: PARTIAL; anonymous public readback blocked by Reddit CAPTCHA.
-- KNOWN_BLOCKERS: HUMAN_AUTHORIZATION — anonymous browser shows Prove your humanity / reCAPTCHA.
+- ACTIVE_WORK: NONE; DONEAUDIT_REDDIT_OUTREACH_POSTED. OUTREACH_REDDIT=PASS.
+- KNOWN_BLOCKERS: EXTERNAL_WAIT for genuine third-party feedback/adoption; no remaining outreach blocker.
 - LOCKED_DECISIONS: Do not submit again. No product code, release, npm publication, product tests, extra platform or monitor.
-- EVENT_PENDING: user completes CAPTCHA on existing anonymous permalink page, then replies 繼續.
-- UNVERIFIED: anonymous visibility; no evidence of pending moderation or removal in authenticated readback. Do not claim OUTREACH_REDDIT=PASS yet.
-- NEXT_EXECUTABLE_ISSUE: explicit Reddit task, remaining readback only after human verification.
-- NEXT_SINGLE_ACTION: finish anonymous public verification of the existing comment, not a second submission.
+- EVENT_PENDING: genuine third-party feedback/adoption or explicit new user authorization. No monitoring or polling.
+- UNVERIFIED: genuine third-party adoption; no pending moderation/removal notice observed. Independent automated anonymous readback remains unavailable, but user-performed public acceptance is explicitly confirmed.
+- NEXT_EXECUTABLE_ISSUE: NONE; authorized single Reddit outreach complete.
+- NEXT_SINGLE_ACTION: wait for genuinely new third-party evidence or explicit authorization; stop this turn.
 
 ## Authorization change
 - OLD_BASELINE: external adoption/marketing wait; intervening portable integration evidence below remains historical.
@@ -28,7 +28,7 @@
 - Used user-provided text, normalizing Markdown fence/paragraph formatting only.
 - Submit clicked once; success toast, comment ID p8rgf4q, correct author/body/GitHub/Marketplace links observed. No removal or moderation warning observed.
 - Public verification: web fetch timed out; anonymous in-app browser reached Reddit CAPTCHA. This is a security verification blocker, not evidence of removal.
-- Resume on same permalink; do not recreate the comment.
+- Follow-up acceptance: user explicitly confirmed complete signed-out visibility. Agent refreshed the original authenticated permalink and confirmed body/install/links still present, no removal notice. The separate in-app session still shows CAPTCHA; this does not contradict visibility in the user-tested session. Do not recreate the comment.
 
 ## Live external snapshot (2026-09-09 23:22 UTC+8)
 - DoneAudit Stars: 0.
@@ -36,6 +36,14 @@
 - Awesome Codex CLI PR #246: OPEN; comments 0; reviews 0.
 - Genuine third-party adoption: not obtained. Own Reddit comment does not count.
 - npm downloads and other external replies: not fetched this round; do not estimate.
+
+## Closure review
+- OLD_BASELINE: anonymous readback blocked pending human verification.
+- NEW_EVIDENCE: user explicitly completed signed-out public visibility acceptance; existing authenticated permalink refreshed successfully.
+- SUPERSEDED_DECISION: human verification blocker cleared by user-provided runtime evidence, not by bypassing CAPTCHA.
+- Final reviewer: primary agent checked destination, one-submit history, account, body/links, public user acceptance, and frozen product scope.
+- Current GitHub recheck: Stars 0, all-state Issue/PR 0/0, PR #246 OPEN with comments/reviews 0/0.
+- Only LATEST.md updated; existing governance-only DoneAudit commands validate documentation scope, not product or Reddit visibility.
 
 ## Scope and preservation
 Only this handoff changed this round. No product checks or features. Prior proof/portable release distinctions below are CARRIED_FORWARD, not fresh product acceptance.
