@@ -1,3 +1,47 @@
+# Current checkpoint — Reddit outreach
+
+- CURRENT_GOAL: One authorized root comment in r/ChatGPTCoding weekly promotion thread; no product changes.
+- CURRENT_BRANCH: main; CURRENT_HEAD: resolve live Git. Input HEAD f1a552024a34d67df7089026bc4abb3e747d3b9f.
+- LAST_VERIFIED_STATE: VERIFIED_BY_RUNTIME_OR_PRODUCTION: Reddit displayed successful comment submission and authenticated permalink readback with complete content and both correct links. Anonymous public visibility remains unverified.
+- COMPLETED: exactly one submit under existing u/kafidog; no new account, no additional promotion.
+- ACTIVE_WORK: PARTIAL; anonymous public readback blocked by Reddit CAPTCHA.
+- KNOWN_BLOCKERS: HUMAN_AUTHORIZATION — anonymous browser shows Prove your humanity / reCAPTCHA.
+- LOCKED_DECISIONS: Do not submit again. No product code, release, npm publication, product tests, extra platform or monitor.
+- EVENT_PENDING: user completes CAPTCHA on existing anonymous permalink page, then replies 繼續.
+- UNVERIFIED: anonymous visibility; no evidence of pending moderation or removal in authenticated readback. Do not claim OUTREACH_REDDIT=PASS yet.
+- NEXT_EXECUTABLE_ISSUE: explicit Reddit task, remaining readback only after human verification.
+- NEXT_SINGLE_ACTION: finish anonymous public verification of the existing comment, not a second submission.
+
+## Authorization change
+- OLD_BASELINE: external adoption/marketing wait; intervening portable integration evidence below remains historical.
+- NEW_EVIDENCE: user explicitly authorized one minimum Reddit outreach; live GitHub query still shows Stars 0 and Issue/PR 0, adoption evidence not obtained.
+- SUPERSEDED_DECISION: marketing stop lifted only for this one Reddit submission. Product freeze remains.
+
+## Reddit evidence
+- Subreddit: https://www.reddit.com/r/ChatGPTCoding/
+- Current pinned thread: https://www.reddit.com/r/ChatGPTCoding/comments/1w9lsay/weekly_self_promotion_thread/
+- Rule 5 routes promotional projects including FOSS into weekly thread; rule 7 prohibits low-value raw AI walls of text. Pinned AutoModerator thread expressly permits AI coding projects and requests problem, tools, audience, feedback and affiliation.
+- Subreddit search DoneAudit and kafidog/DoneAudit returned no identifiable duplicate; thread search DoneAudit explicitly returned no results; no kafidog comment found before posting.
+- Comment: https://www.reddit.com/r/ChatGPTCoding/comments/1w9lsay/comment/p8rgf4q/
+- Account: u/kafidog (existing Chrome login).
+- Publication: 2026-09-09 approximately 23:21–23:22 UTC+8 based on local clock and displayed 1 minute ago; exact timestamp not obtained.
+- Used user-provided text, normalizing Markdown fence/paragraph formatting only.
+- Submit clicked once; success toast, comment ID p8rgf4q, correct author/body/GitHub/Marketplace links observed. No removal or moderation warning observed.
+- Public verification: web fetch timed out; anonymous in-app browser reached Reddit CAPTCHA. This is a security verification blocker, not evidence of removal.
+- Resume on same permalink; do not recreate the comment.
+
+## Live external snapshot (2026-09-09 23:22 UTC+8)
+- DoneAudit Stars: 0.
+- DoneAudit Issue / PR: 0 / 0 (all-state API empty).
+- Awesome Codex CLI PR #246: OPEN; comments 0; reviews 0.
+- Genuine third-party adoption: not obtained. Own Reddit comment does not count.
+- npm downloads and other external replies: not fetched this round; do not estimate.
+
+## Scope and preservation
+Only this handoff changed this round. No product checks or features. Prior proof/portable release distinctions below are CARRIED_FORWARD, not fresh product acceptance.
+
+## Historical checkpoints (not active instructions)
+
 # Current DoneAudit integration checkpoint
 
 - CURRENT_GOAL: resume existing persistent context and integrate the single DoneAudit engine; governance-only.
